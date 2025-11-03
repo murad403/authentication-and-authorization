@@ -1,22 +1,31 @@
-import { UserServices } from "./user.service.js"
+import { JWT_ACCESSTOKEN_EXPIREIN, JWT_REFRESHTOKEN_EXPIREIN } from "../../config/index.js";
+import catchAsync from "../../utils/catchAsync.js";
+import tokenGenerator from "../../utils/tokenGenerator.js";
+import { UserServices } from "./user.service.js";
 
-const createUser = async(req, res) =>{
-    try {
-        const newUserData = req.body();
-        const result = await UserServices.createUserIntoDB(newUserData);
-        res.stats(200).json({
+const createUser = catchAsync(async (req, res) => {
+    const newUserData = req.body;
+    const result = await UserServices.createUserIntoDB(newUserData);
+    const accessToken = tokenGenerator(newUserData, JWT_ACCESSTOKEN_EXPIREIN);
+    const refreshToken = tokenGenerator(newUserData, JWT_REFRESHTOKEN_EXPIREIN);
+    res.cookie("accessToken", accessToken, {
+        httpOnly: false,
+        secure: true,
+        sameSite: "none",
+        maxAge: 1000 * 60 * 2,
+    }).cookie("refreshToken", refreshToken, {
+        httpOnly: false,
+        secure: true,
+        sameSite: "none",
+        maxAge: 1000 * 60 * 60 * 24 * 30,
+    })
+        .status(200).json({
             success: true,
             message: "User created successfully",
             data: result
         })
-    } catch (error) {
-        console.log(`create user error ${error}`);
-        res.stats(500).json({
-            success: false,
-            message: "Internal server error"
-        })
-    }
-}
+})
+
 
 export const UserControllers = {
     createUser
