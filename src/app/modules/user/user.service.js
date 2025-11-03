@@ -11,6 +11,19 @@ const createUserIntoDB = async(payload) =>{
     return result;
 }
 
+const loginUserFromDB = async(payload) =>{
+    const existingUser = await User.findOne({email: payload.email});
+    if(!existingUser){
+        throw new Error("User does not exists please sing up first!");
+    }
+    const comparePassword = await bcrypt.compare(payload.password, existingUser.password);
+    if(!comparePassword){
+        throw new Error("Incorrect password");
+    }
+    return existingUser;
+}
+
 export const UserServices = {
-    createUserIntoDB
+    createUserIntoDB,
+    loginUserFromDB
 }

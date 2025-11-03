@@ -21,12 +21,36 @@ const createUser = catchAsync(async (req, res) => {
     })
         .status(200).json({
             success: true,
-            message: "User created successfully",
+            message: "User registered successfully",
+            data: result
+        })
+})
+
+const loginUser = catchAsync(async (req, res) => {
+    const user = req.body;
+    const result = await UserServices.loginUserFromDB(user);
+    const accessToken = tokenGenerator(result, JWT_ACCESSTOKEN_EXPIREIN);
+    const refreshToken = tokenGenerator(result, JWT_REFRESHTOKEN_EXPIREIN);
+    res.cookie("accessToken", accessToken, {
+        httpOnly: false,
+        secure: true,
+        sameSite: "none",
+        maxAge: 1000 * 60 * 2,
+    }).cookie("refreshToken", refreshToken, {
+        httpOnly: false,
+        secure: true,
+        sameSite: "none",
+        maxAge: 1000 * 60 * 60 * 24 * 30,
+    })
+        .status(200).json({
+            success: true,
+            message: "User login successfully",
             data: result
         })
 })
 
 
 export const UserControllers = {
-    createUser
+    createUser,
+    loginUser
 }
