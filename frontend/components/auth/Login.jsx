@@ -11,8 +11,9 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = async(data) => {
     console.log('Login submitted:', data);
+    
   };
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -34,8 +35,8 @@ const Login = () => {
                                 type="email"
                                 autoComplete="email"
                                 placeholder="Email address"
-                                {...register('email', {z
-                                    required: 'Email is required',
+                                {...register('email', {
+                                    required: 'Email is required'
                                 })}
                                 className={`appearance-none rounded-lg relative block w-full px-3 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'
                                     } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}

@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Eye, EyeOff } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import useAxiosPublic from '../../hooks/useAxiosPublic';
+import { toast } from 'sonner';
 
 const Register = () => {
+    const axiosPublic = useAxiosPublic();
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const {
         register,
@@ -13,6 +17,16 @@ const Register = () => {
 
     const onSubmit = (data) => {
         console.log('Registration data:', data);
+        axiosPublic.post('/auth/sign-up', data)   
+        .then(result =>{
+            console.log(result.data);
+            toast.success(result.data.message);
+            navigate("/");
+        })
+        .catch(error =>{
+            console.log(error.response.data.message);
+            toast.error(error.response.data.message);
+        })
     };
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -65,7 +79,6 @@ const Register = () => {
                             )}
                         </div>
 
-                        {/* Password Field */}
                         <div className="relative">
                             <label htmlFor="password" className="">
                                 Password
@@ -99,7 +112,6 @@ const Register = () => {
                             )}
                         </div>
 
-                        {/* Role Select Field */}
                         <div>
                             <label htmlFor="role" className="">
                                 Role
@@ -114,7 +126,7 @@ const Register = () => {
                             >
                                 <option value="">Select Role</option>
                                 <option value="user">User</option>
-                                <option value="admin">Admin</option>
+                                <option value="seller">Seller</option>
                             </select>
                             {errors.role && (
                                 <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>
@@ -125,7 +137,7 @@ const Register = () => {
                     {/* Register Button */}
                     <button
                         type="submit"
-                        className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+                        className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors cursor-pointer"
                     >
                         Register
                     </button>
