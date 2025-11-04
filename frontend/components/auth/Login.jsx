@@ -1,20 +1,38 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Eye, EyeOff } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import useAxiosPublic from '../../hooks/useAxiosPublic';
+import { toast } from 'sonner';
+import { AuthContext } from '../../Providers/AuthProvider';
 
 const Login = () => {
+    const {setUser} = useContext(AuthContext);
+    const axiosPublic = useAxiosPublic();
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
 
-  const onSubmit = async(data) => {
-    console.log('Login submitted:', data);
-    
-  };
+    const onSubmit = (data) => {
+        // console.log('Login submitted:', data);
+        axiosPublic.post('/auth/sign-in', data)
+            .then(result => {
+                // console.log(result.data);
+                localStorage.setItem("user", JSON.stringify(result.data.data));
+                setUser(result.data.data);
+                toast.success(result.data.message);
+                navigate("/");
+            })
+            .catch(error => {
+                console.log(error.response.data.message);
+                toast.error(error.response.data.message);
+            })
+
+    };
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-5">
@@ -27,7 +45,7 @@ const Login = () => {
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="email" className="sr-only">
+                            <label htmlFor="email" className="">
                                 Email address
                             </label>
                             <input
