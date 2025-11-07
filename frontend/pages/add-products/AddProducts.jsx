@@ -1,6 +1,9 @@
 import { useForm } from 'react-hook-form';
+import useAxiosPublic from '../../hooks/useAxiosPublic';
+import { toast } from 'sonner';
 
 const AddProducts = () => {
+    const axiosPublice = useAxiosPublic();
     const {
         register,
         handleSubmit,
@@ -9,7 +12,15 @@ const AddProducts = () => {
     } = useForm();
 
     const onSubmit = (data) => {
-        console.log('Product added:', data);
+        // console.log('Product added:', data, typeof data.price);
+        axiosPublice.post('/product/add-product', data)
+        .then(result =>{
+            toast.success(result.data.message);
+            reset();
+        })
+        .catch(error =>{
+            toast.error(error.response.data.message);
+        })
     }
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

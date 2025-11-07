@@ -1,9 +1,11 @@
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config/index.js";
+import { JWT_ACCESSTOKEN_EXPIREIN, JWT_REFRESHTOKEN_EXPIREIN, JWT_SECRET } from "../config/index.js";
 
-const tokenGenerator = (payload, expiresIn) =>{
-    const token = jwt.sign({email: payload.email, role: payload.role}, JWT_SECRET, {expiresIn: expiresIn});
-    return token;
+const tokenGenerator = (payload) =>{
+    const accessToken = jwt.sign({id: payload?._id, email: payload?.email, role: payload?.role}, JWT_SECRET, {expiresIn: JWT_ACCESSTOKEN_EXPIREIN});
+    const refreshToken = jwt.sign({id: payload?._id, email: payload?.email, role: payload?.role}, JWT_SECRET, {expiresIn: JWT_REFRESHTOKEN_EXPIREIN});
+    
+    return {accessToken, refreshToken};
 }
 
 export default tokenGenerator;

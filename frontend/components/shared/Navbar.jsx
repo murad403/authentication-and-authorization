@@ -1,12 +1,14 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../Providers/AuthProvider';
+import { toast } from 'sonner';
 
 const Navbar = () => {
     const { user, setUser } = useContext(AuthContext);
-    const handleLogout = () =>{
-        setUser(null);
+    const handleLogout = () => {
         localStorage.removeItem("user");
+        setUser(null)
+        toast.success("Logout successfully!");
     }
     return (
         <div className='flex justify-between items-center px-10 py-2 bg-gray-300'>
