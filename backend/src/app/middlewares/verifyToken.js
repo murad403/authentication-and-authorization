@@ -2,12 +2,13 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/index.js";
 
 const verifyToken = async(req, res, next) =>{
-    const token = req.headers.authorization.split(" ")[1];
-    if(!token){
+    const accessToken = req.headers.authorization.split(" ")[1];
+    // console.log("accessToken", accessToken);
+    if(!accessToken){
         return res.status(401).json({success: false, message: "Forbidden access"});
     }
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(accessToken, JWT_SECRET);
         if(!decoded){
             return res.status(401).json({success: false, message: "Unauthorized access"});
         }

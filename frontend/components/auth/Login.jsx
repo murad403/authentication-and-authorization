@@ -2,13 +2,10 @@ import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import useAxiosPublic from '../../hooks/useAxiosPublic';
-import { toast } from 'sonner';
 import { AuthContext } from '../../Providers/AuthProvider';
 
 const Login = () => {
-    const {setUser} = useContext(AuthContext);
-    const axiosPublic = useAxiosPublic();
+    const {login} = useContext(AuthContext);
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const {
@@ -18,20 +15,8 @@ const Login = () => {
     } = useForm();
 
     const onSubmit = (data) => {
-        // console.log('Login submitted:', data);
-        axiosPublic.post('/auth/sign-in', data)
-            .then(result => {
-                // console.log(result.data);
-                localStorage.setItem("user", JSON.stringify(result.data.data));
-                setUser(result.data.data);
-                toast.success(result.data.message);
-                navigate("/");
-            })
-            .catch(error => {
-                console.log(error.response.data.message);
-                toast.error(error.response.data.message);
-            })
-
+        login(data);
+        navigate("/");
     };
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
