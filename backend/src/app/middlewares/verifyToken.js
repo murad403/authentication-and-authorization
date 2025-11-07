@@ -5,7 +5,7 @@ const verifyToken = async(req, res, next) =>{
     const accessToken = req.headers.authorization.split(" ")[1];
     // console.log("accessToken", accessToken);
     if(!accessToken){
-        return res.status(401).json({success: false, message: "Forbidden access"});
+        return res.status(403).json({success: false, message: "Forbidden access"});
     }
     try {
         const decoded = jwt.verify(accessToken, JWT_SECRET);
@@ -15,7 +15,7 @@ const verifyToken = async(req, res, next) =>{
         req.user = decoded;
         next();
     } catch (error) {
-        return res.status(403).json({success: false, message: "Invalid token"});
+        return res.status(401).json({success: false, message: "Invalid token"});
     }
 }
 

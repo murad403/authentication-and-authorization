@@ -10,7 +10,7 @@ const AuthProvider = ({ children }) => {
 
     // ! login user
     const login = async (payload) => {
-        axios.post('http://localhost:3000/api/v1/auth/sign-in', payload)
+        axios.post('http://localhost:3000/api/v1/auth/sign-in', payload, {withCredentials: true})
             .then(result => {
                 localStorage.setItem("accessToken", JSON.stringify(result.data.accessToken));
                 localStorage.setItem("user", JSON.stringify(result.data.data));

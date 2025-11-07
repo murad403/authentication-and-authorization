@@ -12,7 +12,7 @@ const useGetAllProducts = () => {
         setLoading(true)
         axiosPublice.get('/product/all-products')
         .then(result =>{
-            setProducts(result.data.data);
+            setProducts(result?.data?.data);
             setLoading(false);
         })
         .catch(error =>{
